@@ -1,0 +1,11 @@
+.DS_Store
+
+keys/private.pem
+keys/.password
+keys/*.unencrypted
+.username
+.id
+
+submissions/*.unencrypted
+submissions/*.tar.gz
+submissions/*.tar.gz.legacy
