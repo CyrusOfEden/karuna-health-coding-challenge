@@ -21,13 +21,10 @@ class TestRateLimiter < Test::Unit::TestCase
 
   def test_async
     start = Time.now
-    test_throws # sleeps ~2.5 seconds
-    # Although the first limit is reached immediately
-    # We should be able to run things again without blocking the main thread
+    test_throws
     3.times do
       assert_raise(RateLimiter::Limited) { run!(:thrower) }
     end
-    # If the main thread hasn't been blocked, less than @period has passed
     assert Time.now < start + @period
   end
 

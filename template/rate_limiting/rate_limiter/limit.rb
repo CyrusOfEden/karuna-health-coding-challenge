@@ -1,11 +1,10 @@
 class RateLimiter
   class Limit
-    attr_reader :threshold, :period, :monitor, :calls
+    attr_reader :threshold, :period, :calls
 
-    def initialize(threshold:, period:, monitor:)
+    def initialize(threshold:, period:)
       @threshold = threshold
       @period = period
-      @monitor = monitor
       @calls = 0
     end
 
@@ -20,12 +19,15 @@ class RateLimiter
     end
 
     def call(&block)
-      return :limit_reached if calls >= threshold
+      if reset_at && reset_at <= Time.now
+        reset!
+      elsif calls >= threshold
+        return :limit_reached
+      end
       result = block.call
 
       if calls.zero?
-        @first_call_at = Time.now
-        monitor.enqueue(limit: self)
+        @first_call_at = Time.now 
       end
       @calls += 1
       result
